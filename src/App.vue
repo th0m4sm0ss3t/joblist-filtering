@@ -22,8 +22,11 @@ export default {
 @import '@/css/reset.scss';
 @import '@/css/vars.scss';
 
-#app {
+body {
   background: $Background;
+}
+
+#app {
   min-height: 100vh;
   font-size: $FontSize;
   font-weight: $FontWeight;
