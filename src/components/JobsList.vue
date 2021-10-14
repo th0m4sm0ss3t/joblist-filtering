@@ -64,14 +64,16 @@ export default {
 }
 
 .jobcard {
-  border: $Dark solid 1px;
+  box-shadow: 0px 8px 11px -6px rgba(123,142,142,0.67);
+  -webkit-box-shadow: 0px 8px 11px -6px rgba(123,142,142,0.67);
+  -moz-box-shadow: 0px 8px 11px -6px rgba(123,142,142,0.67);
+  border-radius: 5px;
   background: white;
   margin: 1rem;
   display: flex;
   justify-content: space-between;
   width: 80%;
   margin: 1.3rem auto;
-
 }
 
 .featuredJobStyle {
@@ -159,4 +161,42 @@ export default {
   padding: 0.5rem 0.5rem 0.3rem ;
   border-radius: 3px;
 }
+
+/* Small screen */
+@media only screen and (max-width: 1440px) {
+  .jobcard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 4rem auto;
+  }
+
+  .primaryInfos {
+    width: 80%;
+    margin: 0 auto;
+    padding: 0 1rem ;
+    flex-wrap: wrap;
+  }
+
+  .secondaryInfos {
+    width: 80%;
+    margin: 0 auto;
+    justify-content: flex-start;
+    padding: 1rem 0;
+    border-top: 1px solid $Dark;
+  }
+
+  .img {
+    position: relative;
+    top: -0.8rem;
+    margin: 0 0.5rem;
+  }
+
+  .infos {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+}
+
 </style>
