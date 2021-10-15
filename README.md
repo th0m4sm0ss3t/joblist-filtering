@@ -1,20 +1,5 @@
-# job-listing
+# Job listings with filtering
 
-## Project setup
-```
-npm install
-```
+This a Job listings with filtering app. It was made with Vue.js and SCSS.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
-# joblist-filtering
+This is based on [this challenge](https://www.frontendmentor.io/challenges/job-listings-with-filtering-ivstIPCt) from Frontend Mentor.
