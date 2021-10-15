@@ -1,23 +1,69 @@
 <template>
   <section>
-    <div v-if="filters.length > 0" class="filterSection">
+    <div v-if="filters.length > 0" >
+      <div class="filterSection">
+        <div>
+          <ul class="filters">
+            <li class="filter" v-for="(filter, index) in filters" :key="filter">
+              <p>{{ filter }}</p>
+              <span @click="removeFilter(filter, index)">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="25" height="25" viewBox="0 0 24 24" stroke-width="2.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </span>
+            </li>
+          </ul>
+        </div>
+        <span class="clear" @click="removeAllFilters">Clear</span>
+      </div>
+
       <div>
-        <ul class="filters">
-          <li class="filter" v-for="(filter, index) in filters" :key="filter">
-            <p>{{ filter }}</p>
-            <span @click="removeFilter(filter, index)">
-              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="25" height="25" viewBox="0 0 24 24" stroke-width="2.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            </span>
+        <ul v-for="filteredJob in filteredJobsArr" :key="filteredJob.id">
+          <li>
+            <div 
+              class="jobcard"
+              v-bind:class="{ featuredJobStyle: filteredJob.featured }"
+            >
+              <div class="primaryInfos">
+                <div class="img">
+                  <img 
+                    :src="filteredJob.logo" 
+                    :alt="'Logo  of '+ filteredJob.company"
+                  >
+                </div>
+
+                <div class="infos">
+                  <h3 class="name">{{ filteredJob.company }}</h3>
+                  <span v-if="filteredJob.new === true" class="new">New !</span>
+                  <span v-if="filteredJob.featured === true" class="featured">Featured</span>
+                  <h3 class="position">{{ filteredJob.position }}</h3>
+
+                  <div class="subInfos">
+                    <p>{{ filteredJob.postedAt }}</p>
+                    <p>{{ filteredJob.contract }}</p>
+                    <p>{{ filteredJob.location }}</p>
+                  </div>
+                </div>
+              </div>
+            
+              <div class="secondaryInfos">
+                <div v-for="lang in filteredJob.languages" :key="lang" class="languagesAndToolsInfos">
+                  <p @click="addFilter(lang)">{{ lang }}</p>
+                </div>
+                <div v-for="tool in filteredJob.tools" :key="tool" class="languagesAndToolsInfos">
+                  <p @click="addFilter(tool)">{{ tool }}</p>
+                </div>
+              </div>
+              
+            </div>
           </li>
         </ul>
       </div>
-      <span class="clear" @click="removeAllFilters">Clear</span>
     </div>
-    <div class="list">
+
+    <div v-else class="list">
       <ul v-for="job in jobs" :key="job.id">
         <li>
           <div 
@@ -59,6 +105,7 @@
         </li>
       </ul>
     </div>
+
   </section>
 </template>
 
@@ -71,6 +118,7 @@ export default {
     return {
       jobs: data,
       filters: [],
+      filteredJobsArr: [],
     }
   },
   methods: {
@@ -79,15 +127,41 @@ export default {
       if (!this.filters.includes(filter)) {
         this.filters.push(filter); 
       }
+
+      this.filteredJobsAdd(filter);
     },
+
     removeFilter (filter, index) {
+      // If element = to the received filter, removed it from arr
       if(this.filters[index] === filter) {
         this.filters.splice(index, 1); 
       }
+
+      this.filteredJobsRemove(filter);
     },
+
     removeAllFilters () {
       this.filters = [];
     },
+
+    // When filters are added to the arr
+    filteredJobsAdd(filter) {
+      this.jobs.forEach(job => {
+        if(job.languages.includes(filter) || job.tools.includes(filter)) {
+          this.filteredJobsArr.push(job); 
+        }
+      });
+      // console.log(this.filteredJobsArr);
+    },
+
+    // When filters are removed from the arr
+    filteredJobsRemove(filter) {
+      this.jobs.forEach(job => {
+        if(job.languages.includes(filter) || job.tools.includes(filter)) {
+          this.filteredJobsArr.pop(job); 
+        }
+      });
+    }
   },
 }
 </script>
@@ -193,10 +267,10 @@ export default {
   padding-right: 1rem;
 }
 
-.img {
+.img img {
   border-radius: 50%;
-  width: 4rem;
-  height: 4rem;
+  width: 5rem;
+  height: 5rem;
   margin: 1.5rem;
 }
 
@@ -298,10 +372,10 @@ export default {
     border-top: 1px solid $Dark;
   }
 
-  .img {
+  .img img {
     position: relative;
-    top: -0.8rem;
-    margin: 0 0.5rem;
+    top: -2rem;
+    margin: 0rem;
   }
 
   .infos {
