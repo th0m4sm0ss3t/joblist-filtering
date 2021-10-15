@@ -1,46 +1,65 @@
 <template>
-  <div class="list">
-    <ul v-for="job in jobs" :key="job.id">
-      <li>
-        <div 
-          class="jobcard"
-          v-bind:class="{ featuredJobStyle: job.featured }"
-        >
-          <div class="primaryInfos">
-            <div class="img">
-              <img 
-                :src="job.logo" 
-                :alt="'Logo  of '+ job.company"
-              >
-            </div>
+  <section>
+    <div v-if="filters.length > 0" class="filterSection">
+      <div>
+        <ul class="filters">
+          <li class="filter" v-for="(filter, index) in filters" :key="filter">
+            <p>{{ filter }}</p>
+            <span @click="removeFilter(filter, index)">
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="25" height="25" viewBox="0 0 24 24" stroke-width="2.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </span>
+          </li>
+        </ul>
+      </div>
+      <span class="clear" @click="removeAllFilters">Clear</span>
+    </div>
+    <div class="list">
+      <ul v-for="job in jobs" :key="job.id">
+        <li>
+          <div 
+            class="jobcard"
+            v-bind:class="{ featuredJobStyle: job.featured }"
+          >
+            <div class="primaryInfos">
+              <div class="img">
+                <img 
+                  :src="job.logo" 
+                  :alt="'Logo  of '+ job.company"
+                >
+              </div>
 
-            <div class="infos">
-              <h3 class="name">{{ job.company }}</h3>
-              <span v-if="job.new === true" class="new">New !</span>
-              <span v-if="job.featured === true" class="featured">Featured</span>
-              <h3 class="position">{{ job.position }}</h3>
+              <div class="infos">
+                <h3 class="name">{{ job.company }}</h3>
+                <span v-if="job.new === true" class="new">New !</span>
+                <span v-if="job.featured === true" class="featured">Featured</span>
+                <h3 class="position">{{ job.position }}</h3>
 
-              <div class="subInfos">
-                <p>{{ job.postedAt }}</p>
-                <p>{{ job.contract }}</p>
-                <p>{{ job.location }}</p>
+                <div class="subInfos">
+                  <p>{{ job.postedAt }}</p>
+                  <p>{{ job.contract }}</p>
+                  <p>{{ job.location }}</p>
+                </div>
               </div>
             </div>
-          </div>
-         
-          <div class="secondaryInfos">
-            <div v-for="lang in job.languages" :key="lang" class="languagesAndToolsInfos">
-              <p>{{ lang }}</p>
-            </div>
-            <div v-for="tool in job.tools" :key="tool" class="languagesAndToolsInfos">
-              <p>{{ tool }}</p>
-            </div>
-          </div>
           
-        </div>
-      </li>
-    </ul>
-  </div>
+            <div class="secondaryInfos">
+              <div v-for="lang in job.languages" :key="lang" class="languagesAndToolsInfos">
+                <p @click="addFilter(lang)">{{ lang }}</p>
+              </div>
+              <div v-for="tool in job.tools" :key="tool" class="languagesAndToolsInfos">
+                <p @click="addFilter(tool)">{{ tool }}</p>
+              </div>
+            </div>
+            
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
 </template>
 
 <script>
@@ -51,13 +70,93 @@ export default {
   data() {
     return {
       jobs: data,
+      filters: [],
     }
-  }
+  },
+  methods: {
+    addFilter (filter) {
+      // If not already present in array, then add element
+      if (!this.filters.includes(filter)) {
+        this.filters.push(filter); 
+      }
+    },
+    removeFilter (filter, index) {
+      if(this.filters[index] === filter) {
+        this.filters.splice(index, 1); 
+      }
+    },
+    removeAllFilters () {
+      this.filters = [];
+    },
+  },
 }
 </script>
 
 <style scoped lang="scss">
 @import '@/css/vars.scss';
+
+.filterSection {
+  position: relative;
+  background: white;
+  box-shadow: 0px 8px 11px -6px rgba(123,142,142,0.67);
+  -webkit-box-shadow: 0px 8px 11px -6px rgba(123,142,142,0.67);
+  -moz-box-shadow: 0px 8px 11px -6px rgba(123,142,142,0.67);
+  border-radius: 5px;
+  top: -3.5rem;
+  width: 80%;
+  margin: 1.3rem auto;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.filter {
+  margin: 0.5rem;
+  background: $Background;
+  color: $Primary;
+  font-weight: $FontWeightBold;
+  border-radius: 3px;
+  width: fit-content;
+  display: flex;
+  align-items: center;
+}
+
+.filter p {
+  padding: 0.5rem;
+}
+
+.filter span {
+  background: $Primary;
+  color: white;
+  padding: 0.3rem 0.5rem;
+  border-radius: 3px;
+}
+
+.filter span:hover {
+  background: $VeryDark;
+  cursor: pointer;
+}
+
+
+.clear {
+  color: $Primary;
+  font-weight: $FontWeightBold;
+}
+
+.clear:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* LIST OF JOBS */
 
 .list {
   margin: 4rem 0;
@@ -108,7 +207,7 @@ export default {
   align-items: center;
 }
 
-.name{
+.name {
   font-weight: $FontWeightBold;
   color: $Primary;
   margin-right: 0.5rem;
@@ -133,9 +232,16 @@ export default {
 
 .position {
   font-weight: $FontWeightBold;
-  margin: 0.5rem 0;
+  font-size: $FontSize * 1.3;
+  margin: 1rem 0;
   width: 100%;
 }
+
+.position:hover {
+  color: $Primary;
+  cursor: pointer;
+}
+
 
 .subInfos {
   margin: 0.5rem 0;
@@ -160,6 +266,12 @@ export default {
   font-weight: $FontWeightBold;
   padding: 0.5rem 0.5rem 0.3rem ;
   border-radius: 3px;
+}
+
+.languagesAndToolsInfos p:hover {
+  cursor: pointer;
+  background: $Primary;
+  color: $Background;
 }
 
 /* Small screen */
